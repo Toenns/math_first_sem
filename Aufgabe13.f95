@@ -1,9 +1,11 @@
 MODULE Spat
     IMPLICIT NONE
 
+    INTEGER, PARAMETER :: dp= SELECTED_REAL_KIND (P=15,R=307)
+
     PRIVATE
 
-    PUBLIC :: OPERATOR (.SP.), OPERATOR ( .CP. ), OPERATOR ( .A. ), surface, volume, MAG
+    PUBLIC :: OPERATOR (.SP.), OPERATOR ( .CP. ), OPERATOR ( .A. ), surface, volume, MAG, dp
 
     INTERFACE OPERATOR ( .SP. )
         MODULE PROCEDURE scalarproduct
@@ -23,40 +25,40 @@ MODULE Spat
 
     CONTAINS
         FUNCTION scalarproduct(a,b)
-            REAL, DIMENSION(3), INTENT(IN) :: a, b
-            REAL :: scalarproduct
+            REAL (KIND=dp), DIMENSION(3), INTENT(IN) :: a, b
+            REAL (KIND=dp) :: scalarproduct
             scalarproduct =  a(1)*b(1)+a(2)*b(2)+a(3)*b(3)
         END FUNCTION
     
         FUNCTION magnitude(a)
-            REAL, DIMENSION(3) :: a
-            REAL :: magnitude
+            REAL (KIND=dp), DIMENSION(3) :: a
+            REAL (KIND=dp) :: magnitude
             magnitude = sqrt(a .SP. a)
         END FUNCTION
         
         FUNCTION crossproduct(a,b)
-            REAL, DIMENSION(3), INTENT(IN) :: a, b
-            REAL, DIMENSION(3) :: crossproduct
+            REAL (KIND=dp), DIMENSION(3), INTENT(IN) :: a, b
+            REAL (KIND=dp), DIMENSION(3) :: crossproduct
             crossproduct(1) = a(2)*b(3) - a(3)*b(2)
             crossproduct(2) = a(3)*b(1) - a(1)*b(3)
             crossproduct(3) = a(1)*b(2) - a(2)*b(1)
         END FUNCTION
 
         FUNCTION area(a,b)
-            REAL, DIMENSION(3), INTENT(IN) :: a, b 
-            REAL :: area
+            REAL (KIND=dp), DIMENSION(3), INTENT(IN) :: a, b 
+            REAL (KIND=dp) :: area
             area = magnitude(a .CP. b)
         END FUNCTION
 
         FUNCTION surface(a,b,c)
-            REAL, DIMENSION(3), INTENT(IN) :: a, b, c 
-            REAL :: surface
+            REAL (KIND=dp), DIMENSION(3), INTENT(IN) :: a, b, c 
+            REAL (KIND=dp) :: surface
             surface = 2 * ((a .A. b) + (b .A. c) + (c .A. a))
         END FUNCTION
 
         FUNCTION volume(a,b,c)
-            REAL, DIMENSION(3), INTENT(IN) :: a, b, c
-            REAL :: volume
+            REAL (KIND=dp), DIMENSION(3), INTENT(IN) :: a, b, c
+            REAL (KIND=dp) :: volume
             volume = MAG((a .CP. b)*c)
         END FUNCTION
 END MODULE Spat
@@ -65,7 +67,8 @@ PROGRAM Parallel
     USE Spat
     IMPLICIT NONE
     CHARACTER :: op
-    REAL, DIMENSION(3) :: a, b, c
+    REAL (KIND=dp), DIMENSION(3) :: a, b, c
+
     
     DO 
         
@@ -115,7 +118,7 @@ PROGRAM Parallel
 
 CONTAINS
     SUBROUTINE zerovector(x)
-        REAL, DIMENSION(3) :: x
+        REAL (KIND=dp), DIMENSION(3) :: x
    
         READ(*,*) x
 
